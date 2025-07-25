@@ -1,0 +1,5 @@
+# Archivos sensibles
+.env
+.env.*
+*.env
+conexion.php

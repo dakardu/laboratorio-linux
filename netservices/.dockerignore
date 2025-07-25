@@ -1,0 +1,6 @@
+.env
+db/nestservices.sql
+.git
+node_modules
+vendor
+*.log

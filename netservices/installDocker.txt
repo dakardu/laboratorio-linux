@@ -1,0 +1,76 @@
+🐳 Guía completa: Instalación manual de Docker en RHEL 10
+
+📦 1. Descargar la versión más reciente de Docker
+
+bash
+curl -o docker-28.3.2.tgz https://download.docker.com/linux/static/stable/x86_64/docker-28.3.2.tgz
+
+📁 2. Mover el archivo a una carpeta personal con permisos de escritura
+
+bash
+mkdir -p ~/docker-install
+mv docker-28.3.2.tgz ~/docker-install/
+cd ~/docker-install
+
+📤 3. Descomprimir el paquete
+
+bash
+tar xzvf docker-28.3.2.tgz
+
+🚀 4. Copiar los binarios al sistema
+
+bash
+sudo cp docker/* /usr/bin/
+
+🔧 5. Crear carpeta para logs con permisos del usuario
+
+bash
+mkdir -p ~/docker-logs
+
+🔌 6. Iniciar el daemon Docker (dockerd) correctamente
+
+Usa sudo con redirección completa para evitar errores de permisos:
+
+bash
+sudo bash -c 'nohup dockerd > /home/dakardu/docker-logs/docker.log 2>&1 &'
+💡 Reemplaza dakardu por tu nombre de usuario si es distinto.
+
+🧪 7. Verificar que el daemon esté corriendo
+
+bash
+docker version
+Debe mostrar tanto la sección de Client como la de Server.
+
+🐙 8. Probar ejecución de contenedores
+
+bash
+docker run hello-world
+🔒 Configurar acceso sin sudo al cliente Docker
+
+👥 9. Crear el grupo docker si no existe
+
+bash
+sudo groupadd docker
+
+👤 10. Añadir tu usuario al grupo
+
+bash
+sudo usermod -aG docker dakardu
+
+🔄 11. Activar el grupo sin reiniciar (opcional)
+
+bash
+newgrp docker
+O simplemente cerrar sesión y volver a entrar.
+
+🧹 12. Ajustar permisos del socket para que el grupo tenga acceso
+
+bash
+sudo chown root:docker /var/run/docker.sock
+sudo chmod 660 /var/run/docker.sock
+✅ Confirmación final
+bash
+docker version
+docker run hello-world
+
+Si todo está bien, deberías ver el mensaje de bienvenida de Docker 🎉

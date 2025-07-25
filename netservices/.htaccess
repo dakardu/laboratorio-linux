@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # 👉 Evitar que las rutas dinámicas interfieran con los archivos reales
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule ^.*$ - [L]
+
+  # 👉 Redirigir rutas limpias al index.php (solo si usás controlador central)
+  RewriteRule ^(.+)$ index.php [QSA,L]
+</IfModule>
+
+# 👉 Asegurar que CSS y JS se sirvan con el tipo correcto
+AddType text/css .css
+AddType application/javascript .js
