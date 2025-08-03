@@ -1,6 +1,5 @@
 <?php
-session_start();
-require_once __DIR__ . '/config/routes.php';
+// La sesión y las rutas ahora se gestionan en public/index.php
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -26,18 +25,19 @@ require_once __DIR__ . '/config/routes.php';
         <div>
           <?php if (isset($_SESSION['rol_usuario']) && $_SESSION['rol_usuario'] == 'admin'): ?>
             <a href="<?php echo ADMIN_URL; ?>"><i class="fas fa-tools"></i> Panel Admin</a>
-            <a href="<?php echo BASE_URL . 'views/usuario/perfil.php'; ?>"><i class="fas fa-user-circle"></i> Mi Perfil</a>
+            <a href="<?php echo USER_PROFILE_URL; ?>"><i class="fas fa-user-circle"></i> Mi Perfil</a>
             <a href="<?php echo LOGOUT_URL; ?>"><i class="fas fa-right-from-bracket"></i> Cerrar sesión</a>
 
           <?php elseif (isset($_SESSION['rol_usuario']) && $_SESSION['rol_usuario'] == 'usuario'): ?>
-            <a href="<?php echo BASE_URL . 'views/usuario/perfil.php'; ?>"><i class="fas fa-user-circle"></i> Mi Perfil</a>
+            <a href="<?php echo USER_PANEL_URL; ?>"><i class="fas fa-tachometer-alt"></i> Panel de Usuario</a>
+            <a href="<?php echo USER_PROFILE_URL; ?>"><i class="fas fa-user-circle"></i> Mi Perfil</a>
             <a href="<?php echo LOGOUT_URL; ?>"><i class="fas fa-right-from-bracket"></i> Cerrar sesión</a>
 
           <?php else: ?>
             <a href="<?php echo BASE_URL; ?>"><i class="fas fa-house"></i> Inicio</a>
             <a href="<?php echo LOGIN_URL; ?>"><i class="fas fa-right-to-bracket"></i> Sign in</a>
             <?php if (!isset($_SESSION['id'])): ?>
-              <a href="<?php echo REGISTRAR_USUARIO_URL; ?>"><i class="fas fa-user-plus"></i> Registrar</a>
+              <a href="<?php echo REGISTER_URL; ?>"><i class="fas fa-user-plus"></i> Registrar</a>
             <?php endif; ?>
           <?php endif; ?>
         </div>

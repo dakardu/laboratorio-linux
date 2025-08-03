@@ -2,117 +2,263 @@
 
 🧩 Descripción general
 Netservices es un sistema web basado en PHP que gestiona accesos diferenciados por rol:
-- 🔐 Administradores acceden a paneles de gestión.
-- 👤 Usuarios normales visualizan su contenido personalizado.
 
-📁 Estructura del proyect
+-   🔐 Administradores acceden a paneles de gestión.
+-   👤 Usuarios normales visualizan su contenido personalizado.
 
-NETSERVICES/
-├── admin/                      # Vistas y lógica para el panel de administración
-│   ├── admin.php
-│   ├── editar_formulario.php
-│
-├── assets/                     # Archivos estáticos (estilos e imágenes)
-│   ├── css/
-│   ├── img/
-│
-├── config/                     # Configuración general y conexión a DB
-│   ├── conexion.php
-│   ├── routes.php
-│
-├── controllers/               # Lógica de negocio dividida por módulos
-│   ├── admin/
-│   ├── usuario/
-│       ├── cambiar_password.php
-│       ├── editar_usuario.php
-│       ├── eliminar_usuario.php
-│       ├── require_usuario.php
-│       ├── login.php
-│       ├── logout.php
-│       ├── registrar.php
-│
-├── views/                     # Vistas HTML/PHP del sistema
-│   ├── admin/
-│       ├── gestionar_usuarios.php
-│   ├── usuario/
-│       ├── panel_usuario.php
-│       ├── perfil.php
-│       ├── acceso_denegado.php
-│       ├── login.php
-│       ├── registro.php
-│
-├── vendor/                    # Dependencias instaladas con Composer
-│   ├── autoload.php
-│   ├── composer/
-│   ├── graham-campbell/
-│   ├── phpoption/
-│   ├── symfony/
-│   ├── vlucas/
-│   ├── composer.json
-│   ├── composer.lock
-│
-├── .env.example               # Ejemplo editable para configuración de entorno
-├── .gitignore                 # Exclusión de archivos sensibles (como .env)
-├── header.php                 # Cabecera HTML compartida
-├── index.php                  # Entrada principal del sitio
-├── README                     # Este archivo (documentación del proyecto)
+📁 Estructura del Proyecto
+.
+├── admin
+│ ├── admin.php
+│ └── editar_formulario.php
+├── config
+│ └── routes.php
+├── controllers
+│ ├── admin
+│ │ └── require_admin.php
+│ ├── usuario
+│ │ ├── cambiar_password.php
+│ │ ├── editar_usuario.php
+│ │ ├── eliminar_usuario.php
+│ │ └── require_usuario.php
+│ ├── login.php
+│ ├── logout.php
+│ └── registrar.php
+├── db
+│ └── netservices.sql
+├── public
+│ ├── assets
+│ │ ├── css
+│ │ │ ├── stilo-admin.css
+│ │ │ └── stilo-general.css
+│ │ └── img
+│ │ └── logo.png
+│ ├── .htaccess
+│ └── index.php
+├── views
+│ ├── admin
+│ │ └── gestionar_usuarios.php
+│ ├── usuario
+│ │ ├── panel_usuario.php
+│ │ └── perfil.php
+│ ├── acceso_denegado.php
+│ ├── login.php
+│ └── registro.php
+├── .dockerignore
+├── .env.example
+├── .gitignore
+├── composer.json
+├── composer.lock
+├── docker-compose.prod.yml
+├── docker-compose.yml
+├── Dockerfile
+├── header.php
+├── installDocker.txt
+└── README
 
+🔐 Arquitectura y Flujo de la Aplicación
 
+-   **Punto de Entrada Único (Front Controller):** Todas las peticiones son dirigidas a `public/index.php`. Esto mejora la seguridad y centraliza el control. El archivo `.htaccess` dentro de `public/` se encarga de reescribir las URLs para que apunten a `index.php`.
 
+-   **Enrutamiento:** El archivo `config/routes.php` define las rutas válidas de la aplicación y las asocia a los controladores correspondientes.
 
-🔐 Gestión de accesos
-- Sesiones activadas vía session_start().
-- Usuarios son redirigidos según su rol (admin o usuario).
-- Seguridad reforzada con:
-- /controllers/admin/require_admin.php
-- /controllers/usuario/require_usuario.php
-- Reestablecimiento de contraseña y edición de perfil en /controllers/usuario/cambiar_password.php.
+-   **Controladores:** La lógica de la aplicación (consultas a la base de datos, validaciones, etc.) reside en los archivos dentro de `controllers/`.
+
+-   **Vistas:** Los controladores cargan las plantillas HTML/PHP desde el directorio `views/` para renderizar la respuesta que se envía al usuario.
+
+-   **Gestión de Accesos:** Las sesiones se gestionan para diferenciar entre roles (`admin`, `usuario`). Los controladores `require_admin.php` y `require_usuario.php` protegen las rutas restringidas.
+-   Seguridad reforzada con:
+-   /controllers/admin/require_admin.php
+-   /controllers/usuario/require_usuario.php
+-   Reestablecimiento de contraseña y edición de perfil en /controllers/usuario/cambiar_password.php.
 
 🚀 Navegación dinámica
 El archivo header.php muestra enlaces personalizados según el tipo de sesión activa.
 Las rutas se construyen con la constante BASE_URL definida en /config/routes.php.
 
 🧩 Requisitos
-- Servidor Apache (ej. XAMPP, AlmaLinux + Apache)
-- PHP ≥ 8.0
-- Base de datos MySQL/MariaDB
-- Extensiones recomendadas:
-- mysqli
-- mbstring
-- json
+
+-   Servidor Apache (ej. XAMPP, AlmaLinux + Apache)
+-   PHP ≥ 8.0
+-   Base de datos MySQL/MariaDB
+-   Extensiones recomendadas:
+-   mysqli
+-   mbstring
+-   json
 
 # 🧠 Panel Admin en PHP puro
 
 Este proyecto incluye un sistema de autenticación y panel administrativo usando PHP nativo + conexión segura a MySQL mediante archivo `.env`.
 
-## 🚀 Instalación
+## 🚀 Instalación con Docker (Método Recomendado)
 
-1. Cloná el repositorio:
+La forma más sencilla de ejecutar este proyecto es utilizando Docker y Docker Compose. Esto levantará tanto el servidor web como la base de datos de forma automática.
 
-   ```bash
-   git clone https://github.com/usuario/netservices.git
-   cd netservices
+**Requisitos:**
 
+-   [Docker](https://docs.docker.com/get-docker/)
+-   [Docker Compose](https://docs.docker.com/compose/install/)
 
-2- Copiá el archivo .env.example y renombralo como .env:
-	cp .env.example .env
+<details>
+<summary>Guía de Instalación Manual de Docker en RHEL/CentOS</summary>
 
-3- Editá el .env con tus credenciales de MySQL:
-Dotenv
-DB_HOST=localhost
-DB_USER=tu_usuario
-DB_PASSWORD=tu_clave
-DB_NAME=tu_DB
+Esta es una guía detallada para instalar Docker manualmente si no puedes usar los repositorios oficiales.
 
-4- Instalá las dependencias con Composer:
-	>>composer install
+1.  **Descargar Docker:**
+    ```bash
+    curl -o docker-latest.tgz https://download.docker.com/linux/static/stable/x86_64/docker-latest.tgz
+    ```
+2.  **Descomprimir:**
+    ```bash
+    tar xzvf docker-latest.tgz
+    ```
+3.  **Copiar binarios:**
+    ```bash
+    sudo cp docker/* /usr/bin/
+    ```
+4.  **Iniciar el servicio Docker (daemon):**
+    ```bash
+    sudo nohup dockerd > /var/log/docker.log 2>&1 &
+    ```
+5.  **Configurar para ejecutar sin `sudo` (Recomendado):**
+    ```bash
+    sudo groupadd docker
+    sudo usermod -aG docker $USER
+    # Necesitarás cerrar sesión y volver a entrar para que el cambio de grupo surta efecto.
+    ```
+6.  **Verificar instalación:**
+    ```bash
+    docker version
+    docker run hello-world
+    ```
 
-5- Accedé desde el navegador:
+</details>
 
-	http://localhost/netservices/public/
+**Pasos:**
 
+1.  **Clona el repositorio:**
 
-🔐 Seguridad
-- .env protegido por .gitignore
-- Conexión modular usando Dotenv
-- Separación por capas (config, public, lógica)
+    ```bash
+    git clone https://github.com/dakardu/netservices.git
+    cd netservices
+    ```
+
+2.  **Crea el archivo de entorno:**
+    Copia el archivo de ejemplo `.env.example` para crear tu propio archivo de configuración `.env`. Este archivo es fundamental, ya que contiene las credenciales para la base de datos.
+
+    ```bash
+    cp .env.example .env
+    ```
+
+    _Puedes modificar las credenciales dentro de `.env` si lo deseas, pero el proyecto funcionará con las que vienen por defecto para un entorno de desarrollo._
+
+    > **Nota importante:** Las credenciales de la base de datos no están dentro de la imagen de Docker. Tú las **defines** en este paso al crear el archivo `.env`. Docker Compose se encarga de usar estas credenciales para inicializar la base de datos y configurar la aplicación para que se conecte a ella.
+
+3.  **Levanta los servicios con Docker Compose:**
+    Este comando construirá la imagen de la aplicación (si no existe localmente), descargará la imagen de MySQL y creará e iniciará los contenedores.
+
+    ```bash
+    docker-compose up -d --build
+    ```
+
+4.  **Accede a la aplicación:**
+    Una vez que los contenedores estén en ejecución, abre tu navegador y visita:
+    [http://localhost](http://localhost)
+
+    También puedes acceder a la base de datos a través de phpMyAdmin en:
+    [http://localhost:8080](http://localhost:8080)
+
+---
+
+## 🏭 Entornos de Desarrollo vs. Producción
+
+Este proyecto incluye dos archivos de Docker Compose para gestionar diferentes entornos:
+
+-   **`docker-compose.yml` (Desarrollo):**
+
+    -   Expone el puerto de la base de datos (`3306`) para que puedas conectarte con un cliente de base de datos externo.
+    -   Incluye `phpMyAdmin` en el puerto `8080` para una gestión fácil de la base de datos.
+    -   Ideal para desarrollar y depurar.
+
+-   **`docker-compose.prod.yml` (Producción):**
+    -   **No expone** el puerto de la base de datos al exterior por seguridad. La base de datos solo es accesible por la aplicación.
+    -   **No incluye** `phpMyAdmin`.
+    -   Para usarlo, ejecuta: `docker-compose -f docker-compose.prod.yml up -d --build`
+
+---
+## 🚢 Despliegue en Servidor (desde Docker Hub)
+
+Este es el método recomendado para desplegar la aplicación en un servidor de producción (ej. Ubuntu, RHEL, etc.), ya que no requiere clonar el código fuente.
+
+1.  **Instala Docker y Docker Compose** en el servidor.
+
+2.  **Crea una carpeta para el proyecto:**
+    ```bash
+    mkdir netservices-deploy
+    cd netservices-deploy
+    ```
+
+3.  **Crea los archivos de configuración:**
+    Necesitarás tres elementos en esta carpeta:
+    -   `docker-compose.prod.yml`: El archivo de orquestación.
+    -   `.env`: El archivo con tus credenciales secretas.
+    -   `db/netservices.sql`: El script para inicializar la base de datos.
+
+    Puedes descargar el `docker-compose.prod.yml` y el `netservices.sql` directamente desde GitHub:
+    ```bash
+    # Descargar docker-compose para producción
+    curl -o docker-compose.prod.yml https://raw.githubusercontent.com/dakardu/netservices/main/docker-compose.prod.yml
+
+    # Descargar script de la base de datos
+    mkdir -p db
+    curl -o db/netservices.sql https://raw.githubusercontent.com/dakardu/netservices/main/db/netservices.sql
+    ```
+
+4.  **Crea tu archivo `.env`** con las credenciales para producción. Por ejemplo:
+    ```ini
+    DB_HOST=db
+    DB_NAME=netservices_prod
+    DB_USER=user_prod
+    DB_PASSWORD=una_contraseña_muy_segura
+    MYSQL_ROOT_PASSWORD=otra_contraseña_muy_segura
+    ```
+    > **Credenciales de acceso por defecto:** El script `netservices.sql` crea un usuario administrador inicial con `user: admin@dominio.com` y `password: admin`. ¡Recuerda cambiar esta contraseña después del primer inicio de sesión!
+
+5.  **Levanta la aplicación:**
+    Usa los siguientes comandos para descargar las imágenes de Docker Hub, limpiar restos de contenedores anteriores (opcional pero recomendado) e iniciar la aplicación.
+    ```bash
+    # Descargar las imágenes más recientes
+    docker-compose -f docker-compose.prod.yml pull
+
+    # (Opcional) Limpiar contenedores y volúmenes previos
+    docker-compose -f docker-compose.prod.yml down -v
+
+    # Iniciar la aplicación en segundo plano
+    docker-compose -f docker-compose.prod.yml up -d
+    ```
+    Tu aplicación ahora estará funcionando en el puerto 80 del servidor.
+
+## 🔧 Instalación Manual (Alternativa)
+
+Si prefieres no usar Docker, puedes instalar el proyecto manualmente en un servidor web local como XAMPP o similar.
+
+1.  **Clona el repositorio.**
+2.  **Configura el archivo `.env`** con las credenciales de tu base de datos local.
+3.  **Importa la base de datos:** El archivo `db/netservices.sql` contiene la estructura y datos iniciales. Impórtalo en tu gestor de MySQL o MariaDB.
+4.  **Instala las dependencias** con Composer:
+    ```bash
+    composer install
+    ```
+5.  **Configura tu Servidor Web:**
+    Apunta la raíz de tu servidor web (DocumentRoot en Apache) al directorio `public/` del proyecto. **Esto es muy importante.** Todas las peticiones deben pasar por `public/index.php`.
+
+🔒 Consideraciones para entornos con SELinux (Avanzado)
+En sistemas Linux donde SELinux está activado en modo `enforcing`, es posible que necesites permitir que el contenedor de Apache se conecte a la red para acceder a la base de datos.
+
+Ejecuta el siguiente comando en el **host** (no dentro del contenedor):
+
+```bash
+sudo setsebool -P httpd_can_network_connect_db 1
+```
+
+Esto mantiene el sistema seguro sin desactivar SELinux por completo.

@@ -3,14 +3,9 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require_once(dirname(__DIR__) . '/config/routes.php');
-include HEADER_PATH;
 require_once(dirname(__DIR__) . '/controllers/admin/require_admin.php');
 require_once(dirname(__DIR__) . '/config/conexion.php');
 
-if(!isset($_SESSION['rol_usuario']) || $_SESSION['rol_usuario'] != 'admin') {
-    header('Location: ' . ACCESO_DENEGADO_URL);
-    exit;
-}
 ?>
 <div class="admin-panel-wrapper">
     <div id="main-content">
